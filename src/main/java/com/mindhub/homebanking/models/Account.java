@@ -2,14 +2,10 @@ package com.mindhub.homebanking.models;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Account {
@@ -26,6 +22,11 @@ public class Account {
     String number;
     LocalDate creationDate;
     double balance;
+
+    @OneToMany(mappedBy = "account",fetch = FetchType.EAGER)
+    Set<Transaction> transactions = new HashSet<>();
+
+
 
 
 
@@ -72,5 +73,14 @@ public class Account {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    public Set<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void addTransaction(Transaction transaction){
+        transaction.setAccount(this);
+        transactions.add(transaction);
     }
 }
