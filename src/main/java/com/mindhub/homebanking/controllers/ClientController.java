@@ -19,6 +19,7 @@ public class ClientController {
 
     @RequestMapping("/clients")
     public List<ClientDTO> getAll() {
+
         return repo.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
     }
 
