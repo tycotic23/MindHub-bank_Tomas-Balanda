@@ -82,4 +82,8 @@ public class Client {
         clientLoan.setClient(this);
         clientLoans.add(clientLoan);
     }
+
+    public Set<ClientLoan> getClientLoans() {
+        return clientLoans;
+    }
 }
