@@ -19,12 +19,12 @@ public class Account {
     @JoinColumn(name="client_id")
     private Client client;
 
-    String number;
-    LocalDate creationDate;
-    double balance;
+    private String number;
+    private LocalDate creationDate;
+    private double balance;
 
     @OneToMany(mappedBy = "account",fetch = FetchType.EAGER)
-    Set<Transaction> transactions = new HashSet<>();
+    private Set<Transaction> transactions = new HashSet<>();
 
 
 
