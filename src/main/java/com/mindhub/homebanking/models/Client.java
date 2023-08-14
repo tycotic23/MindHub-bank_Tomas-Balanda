@@ -30,15 +30,28 @@ public class Client {
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<Card> cards=new HashSet<>();
 
+    private String password;
+
     public Client(){
 
     }
 
-    public Client(String firstName,String lastName,String email ){
+    public Client(String firstName, String lastName, String email, String password){
         this.email=email;
         this.lastName=lastName;
         this.firstName=firstName;
+        this.password=password;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
 
     public long getId() {
         return id;

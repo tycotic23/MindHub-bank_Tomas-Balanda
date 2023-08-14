@@ -60,8 +60,8 @@ public class HomebankingApplication {
 			account2.addTransaction(tran5);
 			account1.addTransaction(tran6);
 
-			Client client1=new Client("Melba","Morel","melba@mindhub.com");
-			Client client2=new Client("Mirta","Digiacomo","mirta@mindhub.com");
+			Client client1=new Client("Melba","Morel","melba@mindhub.com","1234");
+			Client client2=new Client("Mirta","Digiacomo","mirta@mindhub.com","tito");
 
 
 
