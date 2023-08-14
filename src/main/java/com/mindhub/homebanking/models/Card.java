@@ -11,19 +11,21 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.AUTO,generator = "native")
     @GenericGenerator(strategy = "native",name = "native")
     private long id;
+
+    private String cardholder;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cardholder_id")
-    private Client cardholder;
+    private Client client;
     private CardType type;
     private CardColor color;
     private String number;
     private LocalDate thruDate, fromDate;
-    private int cvv;
+    private short cvv;
 
     public Card() {
     }
 
-    public Card(CardType type, CardColor color, String number, LocalDate thruDate, LocalDate fromDate, int cvv) {
+    public Card(CardType type, CardColor color, String number, LocalDate fromDate,LocalDate thruDate, short cvv) {
         this.type = type;
         this.color = color;
         this.number = number;
@@ -36,12 +38,17 @@ public class Card {
         return id;
     }
 
-    public Client getCardholder() {
+    public Client getClient() {
+        return client;
+    }
+
+    public String getCardholder() {
         return cardholder;
     }
 
-    public void setCardholder(Client cardholder) {
-        this.cardholder = cardholder;
+    public void setClient(Client client) {
+        this.client = client;
+        this.cardholder=client.getFirstName()+client.getLastName();
     }
 
     public CardType getType() {
@@ -84,11 +91,11 @@ public class Card {
         this.fromDate = fromDate;
     }
 
-    public int getCvv() {
+    public short getCvv() {
         return cvv;
     }
 
-    public void setCvv(int cvv) {
+    public void setCvv(short cvv) {
         this.cvv = cvv;
     }
 }
