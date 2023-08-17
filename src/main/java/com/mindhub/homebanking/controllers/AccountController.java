@@ -2,7 +2,6 @@ package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.models.Account;
-import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +52,10 @@ public class AccountController {
         return "VIN-"+random;
     }
 
-    //metodo de prueba
-    /*@RequestMapping("/accounts/byclients")
-    public List<AccountDTO> getByClient(){
-        return accountRepository.findByClient_email("melba@mindhub.com").stream().map(AccountDTO::new).collect(Collectors.toList());
-    }*/
+    @RequestMapping(path ="/clients/current/accounts")
+    public List<AccountDTO> getClientAccount(Authentication authentication){
+        //verificar que cumpla con todas las condiciones
+        //si cumple las condiciones se crea una cuenta
+        return accountRepository.findByClient_email(authentication.getName()).stream().map(AccountDTO::new).collect(Collectors.toList());
+    }
 }

@@ -1,7 +1,9 @@
 package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.ClientDTO;
+import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,9 @@ public class ClientController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     @RequestMapping("/clients")
     public List<ClientDTO> getAll() {
@@ -49,7 +55,13 @@ public class ClientController {
 
         }
         //si todo fue correcto crear la nueva entidad Cliente
-        clientRepository.save(new Client(firstName,lastName,email,passwordEncoder.encode(password)));
+        Client newClient =new Client(firstName,lastName,email,passwordEncoder.encode(password));
+        clientRepository.save(newClient);
+        //crear primera cuenta del cliente
+        Account account = new Account("VIN-"+(int) (Math.random() * 99999999), LocalDate.now(),0.0);
+        account.setClient(newClient);
+        accountRepository.save(account);
+        //devolver respuesta
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -57,4 +69,6 @@ public class ClientController {
     public ClientDTO getCurrentClient(Authentication authentication){
         return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
     }
+
+
 }
