@@ -23,7 +23,7 @@ public class AccountController {
     private ClientRepository clientRepository;
 
     @RequestMapping("/accounts")
-    public List<AccountDTO> getAll(){
+    public List<AccountDTO> getAllAccounts(){
         return accountRepository.findAll().stream().map(AccountDTO::new).collect(Collectors.toList());
     }
 

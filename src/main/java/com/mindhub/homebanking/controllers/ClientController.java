@@ -30,7 +30,7 @@ public class ClientController {
     private AccountRepository accountRepository;
 
     @RequestMapping("/clients")
-    public List<ClientDTO> getAll() {
+    public List<ClientDTO> getAllClients() {
 
         return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
     }
@@ -44,14 +44,29 @@ public class ClientController {
     @RequestMapping(path="/clients",method = RequestMethod.POST)
     public ResponseEntity<Object> register(@RequestParam String firstName,@RequestParam String lastName,@RequestParam String email,@RequestParam String password ){
         //verificar datos recibidos
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (firstName.isEmpty()) {
 
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Missing data: Please complete the first name", HttpStatus.FORBIDDEN);
+
+        }
+        if (lastName.isEmpty()) {
+
+            return new ResponseEntity<>("Missing data: Please complete the last name", HttpStatus.FORBIDDEN);
+
+        }
+        if (email.isEmpty()) {
+
+            return new ResponseEntity<>("Missing data: Please complete the email", HttpStatus.FORBIDDEN);
+
+        }
+        if (password.isEmpty()) {
+
+            return new ResponseEntity<>("Missing data: Please complete the password", HttpStatus.FORBIDDEN);
 
         }
         if (clientRepository.findByEmail(email) !=  null) {
 
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
 
         }
         //si todo fue correcto crear la nueva entidad Cliente
