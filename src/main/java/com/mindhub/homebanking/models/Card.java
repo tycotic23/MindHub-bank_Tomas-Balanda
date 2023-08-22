@@ -3,6 +3,7 @@ package com.mindhub.homebanking.models;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 
 @Entity
@@ -32,6 +33,15 @@ public class Card {
         this.thruDate = thruDate;
         this.fromDate = fromDate;
         this.cvv = cvv;
+    }
+
+    public Card(CardType type, CardColor color){
+        this.type = type;
+        this.color = color;
+        generateNumber();
+        generateCvv();
+        fromDate=LocalDate.now();
+        thruDate=LocalDate.now().plusYears(5);
     }
 
     public long getId() {
@@ -97,5 +107,22 @@ public class Card {
 
     public void setCvv(short cvv) {
         this.cvv = cvv;
+    }
+
+    private void generateCvv(){
+
+        cvv= (short) (Math.random() * 999);
+    }
+
+    private void generateNumber(){
+        DecimalFormat format=new DecimalFormat("0000");
+        String number="";
+        for(int i=0;i<4;i++){
+            number += format.format((int)(Math.random() * 9999));
+            if(i!=3){
+                number+="-";
+            }
+        }
+        this.number= number;
     }
 }

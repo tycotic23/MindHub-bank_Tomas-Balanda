@@ -33,12 +33,12 @@ public class HomebankingApplication {
                                       CardRepository cardRepository) {
 		return (args -> {
 
-			Transaction tran1=new Transaction(TransactionType.CREDITO,500.0,"compra de helado", LocalDateTime.now());
-			Transaction tran2=new Transaction(TransactionType.DEBITO,-1500.0,"compra de helado", LocalDateTime.now());
-			Transaction tran3=new Transaction(TransactionType.CREDITO,1500.0,"compra de helado", LocalDateTime.now());
-			Transaction tran4=new Transaction(TransactionType.CREDITO,12500.0,"compra de helado", LocalDateTime.now());
-			Transaction tran5=new Transaction(TransactionType.DEBITO,-5040.0,"compra de helado", LocalDateTime.now());
-			Transaction tran6=new Transaction(TransactionType.CREDITO,250.0,"compra de helado", LocalDateTime.now());
+			Transaction tran1=new Transaction(TransactionType.CREDIT,500.0,"compra de helado", LocalDateTime.now());
+			Transaction tran2=new Transaction(TransactionType.DEBIT,-1500.0,"compra de helado", LocalDateTime.now());
+			Transaction tran3=new Transaction(TransactionType.CREDIT,1500.0,"compra de helado", LocalDateTime.now());
+			Transaction tran4=new Transaction(TransactionType.CREDIT,12500.0,"compra de helado", LocalDateTime.now());
+			Transaction tran5=new Transaction(TransactionType.DEBIT,-5040.0,"compra de helado", LocalDateTime.now());
+			Transaction tran6=new Transaction(TransactionType.CREDIT,250.0,"compra de helado", LocalDateTime.now());
 
 			Account account1=new Account("VIN001", LocalDate.now(),5000.0);
 			Account account2=new Account("VIN002", LocalDate.now().plusDays(1),7500.0);
