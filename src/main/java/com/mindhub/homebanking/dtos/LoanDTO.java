@@ -14,14 +14,12 @@ public class LoanDTO {
     private String name;
     private double maxAmount;
     private List<Integer> payments=new ArrayList<>();
-    private Set<ClientLoanDTO> clients=new HashSet<>();
 
     public LoanDTO(Loan loan) {
         this.id = loan.getId();
         this.name = loan.getName();
         this.maxAmount = loan.getMaxAmount();
         this.payments = loan.getPayments();
-        this.clients = loan.getClientLoans().stream().map(ClientLoanDTO::new).collect(Collectors.toSet());
     }
 
     public long getId() {
@@ -40,7 +38,4 @@ public class LoanDTO {
         return payments;
     }
 
-    public Set<ClientLoanDTO> getClients() {
-        return clients;
-    }
 }

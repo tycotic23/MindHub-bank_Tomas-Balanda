@@ -43,8 +43,8 @@ public class TransactionServiceImplement implements TransactionService {
             return new ResponseEntity<>("The accounts must be different",HttpStatus.FORBIDDEN);
         }
         //verificar que las cuentas existan
-        Account sourceAccount =accountRepository.findByNumber(fromAccountNumber);
-        Account destinationAccount=accountRepository.findByNumber(toAccountNumber);
+        Account sourceAccount =accountRepository.findByNumber(fromAccountNumber).orElse(null);
+        Account destinationAccount=accountRepository.findByNumber(toAccountNumber).orElse(null);
         if(sourceAccount==null){
             return new ResponseEntity<>("Source account not found",HttpStatus.FORBIDDEN);
         }
