@@ -27,7 +27,11 @@ public class Account {
     private Set<Transaction> transactions = new HashSet<>();
 
     public Account() {
-        generateNumberAccount();
+
+    }
+
+    public Account(String number){
+        this.number=number;
         balance=0.0;
         creationDate=LocalDate.now();
     }
@@ -91,9 +95,5 @@ public class Account {
         balance-=amount;
     }
 
-    private void generateNumberAccount(){
-        //crea un numero aleatorio entre el 0 y el 99999999 de la forma: VIN-nnnnnnnn
-        int random= (int) (Math.random() * 99999999);
-        number= "VIN-"+random;
-    }
+
 }

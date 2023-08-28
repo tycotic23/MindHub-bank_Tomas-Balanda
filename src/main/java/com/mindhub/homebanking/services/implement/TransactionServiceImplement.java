@@ -29,13 +29,13 @@ public class TransactionServiceImplement implements TransactionService {
         if(Double.isNaN(amount)){
             return new ResponseEntity<>("Incorrect amount", HttpStatus.FORBIDDEN);
         }
-        if(description.isEmpty()){
+       /* if(description.isBlank()){
             return new ResponseEntity<>("Missing description",HttpStatus.FORBIDDEN);
-        }
-        if(fromAccountNumber.isEmpty()){
+        }*/
+        if(fromAccountNumber.isBlank()){
             return new ResponseEntity<>("Missing source account",HttpStatus.FORBIDDEN);
         }
-        if(toAccountNumber.isEmpty()){
+        if(toAccountNumber.isBlank()){
             return new ResponseEntity<>("Missing destination account",HttpStatus.FORBIDDEN);
         }
         //no debe ser la misma cuenta la de origen y la de destino
@@ -55,14 +55,18 @@ public class TransactionServiceImplement implements TransactionService {
         if(!sourceAccount.getClient().getEmail().equals(clientEmail)){
             return new ResponseEntity<>("Source account must be yours",HttpStatus.FORBIDDEN);
         }
+        //verificar el monto no sea cero o menor
+        if(amount<=0){
+            return new ResponseEntity<>("Incorrect amount",HttpStatus.FORBIDDEN);
+        }
         //verificar que tenga dinero suficiente
         if(sourceAccount.getBalance()<amount){
             return new ResponseEntity<>("Insufficient funds",HttpStatus.FORBIDDEN);
         }
 
         //crear transacciones y asociarlos a sus respectivas cuentas
-        Transaction debitTransaction=new Transaction(TransactionType.DEBIT,-amount,description, LocalDateTime.now());
-        Transaction creditTransaction=new Transaction(TransactionType.CREDIT,amount,description, LocalDateTime.now());
+        Transaction debitTransaction=new Transaction(TransactionType.DEBIT,-amount,description+destinationAccount.getNumber(), LocalDateTime.now());
+        Transaction creditTransaction=new Transaction(TransactionType.CREDIT,amount,description+sourceAccount.getNumber(), LocalDateTime.now());
         sourceAccount.addTransaction(debitTransaction);
         destinationAccount.addTransaction(creditTransaction);
         //modificar balances de las cuentas

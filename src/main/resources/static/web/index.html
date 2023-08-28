@@ -28,13 +28,12 @@
         </div>
         <div class="container index-container">
             <div class="row justify-content-center">
-                <div class="col-md-12 col-lg-10">
-                    <div class="wrap d-md-flex justify-content-center bg-light shadow border-0 rounded-5">
+                <div class="col-md-6 col-lg-4 login-view">
+                    <div class="wrap d-md-flex flex-column justify-content-center">
                         <div
-                            class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last welcome shadow-sm rounded-5">
+                            class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last welcome">
                             <div class="text w-100">
                                 <img class="welcome-logo" src="img/Mindhub-logo.png">
-                                <h2>Welcome to MindHub Bank</h2>
                                 <div v-if="showSignUp" class="form-group">
                                     <a v-on:click="showSignUpToogle" href="#" class="btn btn-light my-2"><small>Sign
                                             In</small></a>
@@ -102,6 +101,7 @@
                                 </form>
                             </template>
                         </div>
+                        
                     </div>
                 </div>
             </div>

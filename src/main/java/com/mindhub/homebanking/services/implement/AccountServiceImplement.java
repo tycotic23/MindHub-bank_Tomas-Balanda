@@ -21,13 +21,13 @@ public class AccountServiceImplement implements AccountService {
     @Autowired
     private ClientRepository clientRepository;
     @Override
-    public List<AccountDTO> getAccountDTO() {
-        return accountRepository.findAll().stream().map(AccountDTO::new).collect(Collectors.toList());
+    public ResponseEntity<Object> getAccountDTO() {
+        return new ResponseEntity<>(accountRepository.findAll().stream().map(AccountDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
     }
 
     @Override
-    public AccountDTO getAccountDTO(long id) {
-        return accountRepository.findById(id).map(AccountDTO::new).orElse(null);
+    public ResponseEntity<Object> getAccountDTO(long id) {
+        return new ResponseEntity<>( accountRepository.findById(id).map(AccountDTO::new).orElse(null),HttpStatus.ACCEPTED);
     }
 
     @Override
@@ -38,11 +38,17 @@ public class AccountServiceImplement implements AccountService {
         }
         //obtener el cliente y revisar que exista
         Client client=clientRepository.findByEmail(clientEmail).orElse(null);
-        if(client==null)
+        if(client==null) {
             return new ResponseEntity<>("User not found", HttpStatus.FORBIDDEN);
+        }
         //si cumple las condiciones se crea una cuenta
+        //generar nuevo numero de cuenta que no este repetido
+        String numberAccount="";
+        do{
+            numberAccount=generateNumberAccount();
+        }while(accountRepository.findByNumber(numberAccount).orElse(null)!=null);
         //crear la nueva cuenta
-        Account account = new Account();
+        Account account = new Account(numberAccount);
         //añadirla al cliente en cuestion
         client.addAccount(account);
         //guardar la cuenta
@@ -51,9 +57,15 @@ public class AccountServiceImplement implements AccountService {
     }
 
     @Override
-    public List<AccountDTO> getClientAccountDTO(String clientEmail) {
+    public ResponseEntity<Object> getClientAccountDTO(String clientEmail) {
         //verificar que cumpla con todas las condiciones
         //si cumple las condiciones se crea una cuenta
-        return accountRepository.findByClient_email(clientEmail).stream().map(AccountDTO::new).collect(Collectors.toList());
+        return new ResponseEntity<>(accountRepository.findByClient_email(clientEmail).stream().map(AccountDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
+    }
+
+    private String generateNumberAccount(){
+        //crea un numero aleatorio entre el 0 y el 99999999 de la forma: VIN-nnnnnnnn
+        int random= (int) (Math.random() * 99999999);
+        return "VIN-"+random;
     }
 }

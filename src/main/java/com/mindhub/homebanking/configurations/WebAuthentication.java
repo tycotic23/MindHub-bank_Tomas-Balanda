@@ -16,17 +16,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class WebAuthentication extends GlobalAuthenticationConfigurerAdapter {
     @Autowired
-    ClientRepository clientRepository;
+    private ClientRepository clientRepository;
 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception{
         auth.userDetailsService(inputName->{
             Client client=clientRepository.findByEmail(inputName).orElse(null);
             if(client!=null){
-                if(client.getFirstName().equals("admin"))
+                if(client.getFirstName().equals("admin")) {
                     return new User(client.getEmail(), client.getPassword(),
 
-                            AuthorityUtils.createAuthorityList("ADMIN","CLIENT"));
+                            AuthorityUtils.createAuthorityList("ADMIN", "CLIENT"));
+                }
                 return new User(client.getEmail(), client.getPassword(),
 
                         AuthorityUtils.createAuthorityList("CLIENT"));

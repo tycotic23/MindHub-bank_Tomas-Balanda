@@ -33,45 +33,55 @@ public class LoanServiceImplement implements LoanService {
     private ClientLoanRepository clientLoanRepository;
 
     @Override
-    public List<LoanDTO> getAllLoans() {
-        return loanRepository.findAll().stream().map(LoanDTO::new).collect(Collectors.toList());
+    public ResponseEntity<Object> getAllLoans() {
+        return new ResponseEntity<>(loanRepository.findAll().stream().map(LoanDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
     }
 
     @Override
     @Transactional
     public ResponseEntity<Object> applyLoanToClient(String clientEmail, LoanApplicationDTO loanApplicationDTO) {
         //revisar que los datos no esten vacios
-        if(clientEmail.isEmpty())
+        if(clientEmail.isBlank()) {
             return new ResponseEntity<>("Missing client", HttpStatus.FORBIDDEN);
-        if(loanApplicationDTO.getToAccountNumber().isEmpty())
+        }
+        if(loanApplicationDTO.getToAccountNumber().isBlank()) {
             return new ResponseEntity<>("Missing number account", HttpStatus.FORBIDDEN);
-        //revisar que amount no sea 0
-        if(loanApplicationDTO.getAmount()==0)
+        }
+        //revisar que amount no sea 0 ni negativo
+        if(loanApplicationDTO.getAmount()<=0) {
             return new ResponseEntity<>("Amount can't be zero", HttpStatus.FORBIDDEN);
+        }
         //revisar que payments no sea 0
-        if(loanApplicationDTO.getPayments()==0)
+        if(loanApplicationDTO.getPayments()==0) {
             return new ResponseEntity<>("Payments can't be zero", HttpStatus.FORBIDDEN);
+        }
         //revisar que el tipo de préstamo exista
         Loan loanType=loanRepository.findById(loanApplicationDTO.getLoanId()).orElse(null);
-        if(loanType==null)
+        if(loanType==null) {
             return new ResponseEntity<>("Loan not found", HttpStatus.FORBIDDEN);
+        }
         //revisar que no exceda el monto máximo
-        if(loanType.getMaxAmount()<loanApplicationDTO.getAmount())
+        if(loanType.getMaxAmount()<loanApplicationDTO.getAmount()) {
             return new ResponseEntity<>("Maximum amount reached", HttpStatus.FORBIDDEN);
+        }
         //validar cantidad de pagos elegidos
-        if(!loanType.getPayments().contains(loanApplicationDTO.getPayments()))
+        if(!loanType.getPayments().contains(loanApplicationDTO.getPayments())) {
             return new ResponseEntity<>("Payments incorrect", HttpStatus.FORBIDDEN);
+        }
         //revisar que la cuenta exista
         Account destinationAccount=accountRepository.findByNumber(loanApplicationDTO.getToAccountNumber()).orElse(null);
-        if(destinationAccount==null)
+        if(destinationAccount==null) {
             return new ResponseEntity<>("Account not found", HttpStatus.FORBIDDEN);
+        }
         //revisar que el cliente exista
         Client client=clientRepository.findByEmail(clientEmail).orElse(null);
-        if(client==null)
+        if(client==null) {
             return new ResponseEntity<>("Client not found", HttpStatus.FORBIDDEN);
+        }
         //revisar que la cuenta pertenezca al cliente
-        if(!client.getAccounts().contains(destinationAccount))
+        if(!client.getAccounts().contains(destinationAccount)) {
             return new ResponseEntity<>("The account does not belong to the current client", HttpStatus.FORBIDDEN);
+        }
 
         //crear nueva entidad y asociar cliente-prestamo
         ClientLoan newLoan=new ClientLoan(client,loanType,loanApplicationDTO.getAmount()*1.2,loanApplicationDTO.getPayments());

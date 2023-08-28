@@ -6,6 +6,8 @@ public class LoanApplicationDTO {
     private double amount;
     private String toAccountNumber;
 
+
+    public LoanApplicationDTO(){}
     public LoanApplicationDTO(long loan_id, int payments, double amount, String accountDestination) {
         this.loanId = loan_id;
         this.payments = payments;

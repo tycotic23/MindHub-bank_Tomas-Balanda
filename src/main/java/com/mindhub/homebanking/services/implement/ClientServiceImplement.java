@@ -27,40 +27,40 @@ public class ClientServiceImplement implements ClientService {
     @Autowired
     private AccountRepository accountRepository;
     @Override
-    public List<ClientDTO> getClientDTO() {
-        return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
+    public ResponseEntity<Object> getClientDTO() {
+        return new ResponseEntity<>(clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
     }
 
     @Override
-    public ClientDTO getClientDTO(long id) {
+    public ResponseEntity<Object> getClientDTO(long id) {
         //obtengo un Client por su id y obtengo su clientID (o null si no lo encuentra)
-        return clientRepository.findById(id).map(ClientDTO::new).orElse(null);
+        return new ResponseEntity<>(clientRepository.findById(id).map(ClientDTO::new).orElse(null),HttpStatus.ACCEPTED);
     }
 
     @Override
-    public ClientDTO getClientDTOByEmail(String email) {
-        return clientRepository.findByEmail(email).map(ClientDTO::new).orElse(null);
+    public ResponseEntity<Object> getClientDTOByEmail(String email) {
+        return new ResponseEntity<>(clientRepository.findByEmail(email).map(ClientDTO::new).orElse(null),HttpStatus.ACCEPTED);
     }
 
     @Override
     public ResponseEntity<Object> saveClient(String firstName, String lastName, String email, String password) {
         //verificar datos recibidos
-        if (firstName.isEmpty()) {
+        if (firstName.isBlank()) {
 
             return new ResponseEntity<>("Missing data: Please complete the first name", HttpStatus.FORBIDDEN);
 
         }
-        if (lastName.isEmpty()) {
+        if (lastName.isBlank()) {
 
             return new ResponseEntity<>("Missing data: Please complete the last name", HttpStatus.FORBIDDEN);
 
         }
-        if (email.isEmpty()) {
+        if (email.isBlank()) {
 
             return new ResponseEntity<>("Missing data: Please complete the email", HttpStatus.FORBIDDEN);
 
         }
-        if (password.isEmpty()) {
+        if (password.isBlank()) {
 
             return new ResponseEntity<>("Missing data: Please complete the password", HttpStatus.FORBIDDEN);
 
@@ -73,11 +73,22 @@ public class ClientServiceImplement implements ClientService {
         //si todo fue correcto crear la nueva entidad Cliente
         Client newClient =new Client(firstName,lastName,email,passwordEncoder.encode(password));
         clientRepository.save(newClient);
+        //generar nuevo numero de cuenta que no este repetido
+        String numberAccount="";
+        do{
+            numberAccount=generateNumberAccount();
+        }while(accountRepository.findByNumber(numberAccount).orElse(null)!=null);
         //crear primera cuenta del cliente
-        Account account = new Account();
+        Account account = new Account(numberAccount);
         newClient.addAccount(account);
         accountRepository.save(account);
         //devolver respuesta
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    private String generateNumberAccount(){
+        //crea un numero aleatorio entre el 0 y el 99999999 de la forma: VIN-nnnnnnnn
+        int random= (int) (Math.random() * 99999999);
+        return "VIN-"+random;
     }
 }

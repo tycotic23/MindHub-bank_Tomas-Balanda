@@ -56,7 +56,7 @@
 }
 
 .welcome {
-    background: linear-gradient(45deg, #5573f8cc, #2d0a66);
+   
 }
 
 .welcome-logo {
@@ -64,9 +64,11 @@
 }
 
 .index-body {
-    background-image: url(../img/mindhub.jpg);
+   
+    background-image: linear-gradient(black,90%, rgba(0, 0, 0, 0)),url(../img/fondo.jpg);
     background-size: cover;
     background-attachment: fixed;
+    background-position: center bottom;
 }
 
 .index-container {
@@ -75,4 +77,18 @@
 
 .rounded-5 {
     border-radius: 10px;
+}
+
+/* ventana de login */
+.login-view{
+    background-image:linear-gradient(rgba(0, 0, 0, 0.219), rgba(0, 0, 0, 0.801)),url(../img/fondologin.jpg);
+    background-size: cover;
+    box-shadow: 0 0 20px rgb(255, 255, 255);
+    color:white;
+    border-radius: 40px;
+    margin-bottom: 6rem;
+}
+
+.login-view>div{
+    max-height: 100%;
 }

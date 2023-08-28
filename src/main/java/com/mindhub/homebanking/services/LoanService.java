@@ -7,6 +7,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface LoanService {
-    public List<LoanDTO> getAllLoans();
+    public ResponseEntity<Object> getAllLoans();
     public ResponseEntity<Object> applyLoanToClient(String clientEmail, LoanApplicationDTO loanApplicationDTO);
 }
