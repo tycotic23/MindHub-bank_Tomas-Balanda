@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.services.implement;
 
+import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.dtos.CardDTO;
 import com.mindhub.homebanking.models.Card;
 import com.mindhub.homebanking.models.CardColor;
@@ -38,7 +39,14 @@ public class CardServiceImplement implements CardService {
 
     @Override
     public ResponseEntity<Object> getCardDTObyClientEmail(String clientEmail) {
-        return new ResponseEntity<>(cardRepository.findByClient_email(clientEmail).stream().map(CardDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
+        //ver que el cliente autenticado exista
+        Client client=clientRepository.findByEmail(clientEmail).orElse(null);
+        if(client==null){
+            return new ResponseEntity<>("User not found",HttpStatus.FORBIDDEN);
+        }
+        //devolver tarjetas del cliente
+        return new ResponseEntity<>(client.getCards().stream().map(CardDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
+        //return new ResponseEntity<>(cardRepository.findByClient_email(clientEmail).stream().map(CardDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
     }
 
     @Override
@@ -60,8 +68,9 @@ public class CardServiceImplement implements CardService {
         }
         //obtener cliente y revisar que exista
         Client client=clientRepository.findByEmail(clientEmail).orElse(null);
-        if(client==null)
+        if(client==null) {
             return new ResponseEntity<>("User not found", HttpStatus.FORBIDDEN);
+        }
         //crear numero de tarjeta unico
         String newCardNumber="";
         do{

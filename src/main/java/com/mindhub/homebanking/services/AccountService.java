@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface AccountService {
     public ResponseEntity<Object> getAccountDTO();
+    public ResponseEntity<Object> getAccountDTO(long id,String clientEmail);
     public ResponseEntity<Object> getAccountDTO(long id);
     public ResponseEntity<Object> saveAccount(String clientEmail);
 

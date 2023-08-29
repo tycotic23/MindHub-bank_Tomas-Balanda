@@ -26,6 +26,15 @@ public class AccountServiceImplement implements AccountService {
     }
 
     @Override
+    public ResponseEntity<Object> getAccountDTO(long id,String clientEmail) {
+        //revisar que la cuenta solicitada pertenezca al cliente autenticado
+        if(!accountRepository.existsByClient_emailAndId(clientEmail,id)){
+            return new ResponseEntity<>("The account doesn't belong to the authenticated user",HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>( accountRepository.findById(id).map(AccountDTO::new).orElse(null),HttpStatus.ACCEPTED);
+    }
+
+    @Override
     public ResponseEntity<Object> getAccountDTO(long id) {
         return new ResponseEntity<>( accountRepository.findById(id).map(AccountDTO::new).orElse(null),HttpStatus.ACCEPTED);
     }
@@ -59,8 +68,14 @@ public class AccountServiceImplement implements AccountService {
     @Override
     public ResponseEntity<Object> getClientAccountDTO(String clientEmail) {
         //verificar que cumpla con todas las condiciones
-        //si cumple las condiciones se crea una cuenta
-        return new ResponseEntity<>(accountRepository.findByClient_email(clientEmail).stream().map(AccountDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
+        //ver que el cliente autenticado exista
+        Client client=clientRepository.findByEmail(clientEmail).orElse(null);
+        if(client==null){
+            return new ResponseEntity<>("User not found",HttpStatus.FORBIDDEN);
+        }
+        //devolver las cuentas de ese cliente
+        return new ResponseEntity<>(client.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
+        //return new ResponseEntity<>(accountRepository.findByClient_email(clientEmail),HttpStatus.ACCEPTED);
     }
 
     private String generateNumberAccount(){
