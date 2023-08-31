@@ -31,15 +31,21 @@
 }
 
 .gold-plastic-card {
-	background: linear-gradient(45deg, #ecad36, #bea328);
+	background-image:linear-gradient(45deg, #ecac36d2, #bea22857),url(../img/montaña.avif) ;
+	background-size: cover;
+	background-position: right bottom;
 }
 
 .silver-plastic-card {
-	background: linear-gradient(45deg, #adadad, #646463);
+	background-image:linear-gradient(45deg, #adadadd5, #6464634d),url(../img/montaña.avif) ;
+	background-size: cover;
+	background-position: right bottom;
 }
 
 .titanium-plastic-card {
-	background: linear-gradient(45deg, #6ea3e0, #185781);
+	background-image:linear-gradient(45deg, #6ea3e0e3, #18578160),url(../img/montaña.avif) ;
+	background-size: cover;
+	background-position: right bottom;
 }
 
 
