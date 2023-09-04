@@ -1,12 +1,14 @@
 package com.mindhub.homebanking.services;
 
-import com.mindhub.homebanking.dtos.LoanApplicationDTO;
 import com.mindhub.homebanking.dtos.LoanDTO;
-import org.springframework.http.ResponseEntity;
+import com.mindhub.homebanking.models.Loan;
 
 import java.util.List;
 
 public interface LoanService {
-    public ResponseEntity<Object> getAllLoans();
-    public ResponseEntity<Object> applyLoanToClient(String clientEmail, LoanApplicationDTO loanApplicationDTO);
+    List<Loan> findAllLoan();
+    List<LoanDTO> getAllLoanDTO();
+
+    Loan findLoanById(long id);
+    LoanDTO getLoanDTOById(long id);
 }

@@ -2,13 +2,9 @@ package com.mindhub.homebanking.services.implement;
 
 import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.models.Account;
-import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
-import com.mindhub.homebanking.repositories.ClientRepository;
 import com.mindhub.homebanking.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,64 +14,22 @@ import java.util.stream.Collectors;
 public class AccountServiceImplement implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private ClientRepository clientRepository;
-    @Override
-    public ResponseEntity<Object> getAccountDTO() {
-        return new ResponseEntity<>(accountRepository.findAll().stream().map(AccountDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
-    }
 
     @Override
-    public ResponseEntity<Object> getAccountDTO(long id,String clientEmail) {
-        //revisar que la cuenta solicitada pertenezca al cliente autenticado
-        if(!accountRepository.existsByClient_emailAndId(clientEmail,id)){
-            return new ResponseEntity<>("The account doesn't belong to the authenticated user",HttpStatus.FORBIDDEN);
-        }
-        return new ResponseEntity<>( accountRepository.findById(id).map(AccountDTO::new).orElse(null),HttpStatus.ACCEPTED);
-    }
-
-    @Override
-    public ResponseEntity<Object> getAccountDTO(long id) {
-        return new ResponseEntity<>( accountRepository.findById(id).map(AccountDTO::new).orElse(null),HttpStatus.ACCEPTED);
-    }
-
-    @Override
-    public ResponseEntity<Object> saveAccount(String clientEmail) {
-        //verificar que cumpla con todas las condiciones
-        if(accountRepository.findByClient_email(clientEmail).size()>=3){
-            return new ResponseEntity<>("User has 3 accounts", HttpStatus.FORBIDDEN);
-        }
-        //obtener el cliente y revisar que exista
-        Client client=clientRepository.findByEmail(clientEmail).orElse(null);
-        if(client==null) {
-            return new ResponseEntity<>("User not found", HttpStatus.FORBIDDEN);
-        }
-        //si cumple las condiciones se crea una cuenta
+    public Account generateAccount() {
         //generar nuevo numero de cuenta que no este repetido
         String numberAccount="";
         do{
             numberAccount=generateNumberAccount();
-        }while(accountRepository.findByNumber(numberAccount).orElse(null)!=null);
-        //crear la nueva cuenta
-        Account account = new Account(numberAccount);
-        //añadirla al cliente en cuestion
-        client.addAccount(account);
-        //guardar la cuenta
-        accountRepository.save(account);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        }while(findByNumber(numberAccount)!=null);
+        //generar nueva cuenta con fecha del momento con un numero no repetido
+        return new Account(numberAccount);
     }
 
     @Override
-    public ResponseEntity<Object> getClientAccountDTO(String clientEmail) {
-        //verificar que cumpla con todas las condiciones
-        //ver que el cliente autenticado exista
-        Client client=clientRepository.findByEmail(clientEmail).orElse(null);
-        if(client==null){
-            return new ResponseEntity<>("User not found",HttpStatus.FORBIDDEN);
-        }
-        //devolver las cuentas de ese cliente
-        return new ResponseEntity<>(client.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toList()),HttpStatus.ACCEPTED);
-        //return new ResponseEntity<>(accountRepository.findByClient_email(clientEmail),HttpStatus.ACCEPTED);
+    public Account findByNumber(String number){
+
+        return accountRepository.findByNumber(number).orElse(null);
     }
 
     private String generateNumberAccount(){
@@ -83,4 +37,36 @@ public class AccountServiceImplement implements AccountService {
         int random= (int) (Math.random() * 99999999);
         return "VIN-"+random;
     }
+
+    public List<Account> findAllAccount(){
+        return accountRepository.findAll();
+    }
+    public List<AccountDTO> getAllAccountDTO(){
+        return findAllAccount().stream().map(AccountDTO::new).collect(Collectors.toList());
+    }
+
+    public Account findAccountById(long id){
+        return accountRepository.findById(id).orElse(null);
+    }
+    public AccountDTO getAccountById(long id){
+        return new AccountDTO(findAccountById(id));
+    }
+
+    public boolean accountBelongsToClient(long id,String email){
+        return accountRepository.existsByClient_emailAndId(email,id);
+    }
+    public boolean existById(long id){
+        return accountRepository.existsById(id);
+    }
+
+
+
+
+    @Override
+    public void saveAccount(Account account) {
+        //guardar la cuenta
+        accountRepository.save(account);
+    }
+
+
 }
