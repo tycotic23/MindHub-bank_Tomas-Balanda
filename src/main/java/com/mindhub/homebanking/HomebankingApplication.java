@@ -23,7 +23,7 @@ public class HomebankingApplication {
 
 		SpringApplication.run(HomebankingApplication.class,args);
 	}
-
+/*
 	@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository,
 									  AccountRepository accountRepository,
@@ -113,5 +113,5 @@ public class HomebankingApplication {
 			clientLoanRepository.save(cl4);
 
 		});
-	}
+	}*/
 }
