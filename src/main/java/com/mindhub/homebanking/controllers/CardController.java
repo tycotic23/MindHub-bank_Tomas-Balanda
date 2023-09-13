@@ -1,20 +1,17 @@
 package com.mindhub.homebanking.controllers;
 
+import com.mindhub.homebanking.dtos.CardDTO;
 import com.mindhub.homebanking.dtos.ClientDTO;
-import com.mindhub.homebanking.models.Card;
-import com.mindhub.homebanking.models.CardColor;
-import com.mindhub.homebanking.models.CardType;
-import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.services.implement.CardServiceImplement;
 import com.mindhub.homebanking.services.implement.ClientServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -26,8 +23,12 @@ public class CardController {
     private ClientServiceImplement clientService;
 
     @RequestMapping("/cards")
-    public ResponseEntity<Object> getAllCards(){
-        return new ResponseEntity<>(cardService.getAllCardDTO(),HttpStatus.ACCEPTED);
+    public ResponseEntity<Object> getAllCards(Authentication authentication){
+        if(authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ADMIN"))) {
+            return new ResponseEntity<>(cardService.getAllCardDTO(),HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Only for admin", HttpStatus.FORBIDDEN);
     }
 
     /*Retorna las tarjetas del cliente autenticado*/
@@ -44,11 +45,11 @@ public class CardController {
             return new ResponseEntity<>("User not found",HttpStatus.FORBIDDEN);
         }
         //obtener sus tarjetas
-        return new ResponseEntity<>(currentClient.getCards(),HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(currentClient.getCards(), HttpStatus.ACCEPTED);
     }
 
     /*Metodo para crear tarjetas para el cliente autenticado, siempre y cuando el cliente no tenga una*/
-    @RequestMapping(path = "/clients/current/cards",method = RequestMethod.POST)
+    @PostMapping("/clients/current/cards")
     public ResponseEntity<Object> createCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor, Authentication authentication){
         //revisar autenticacion
         if(authentication==null) {
@@ -78,6 +79,35 @@ public class CardController {
         cardService.saveCard(newCard);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/cards")
+    public ResponseEntity<Object> deleteCard(@RequestParam String number,Authentication authentication){
+        //validar el numero
+        if(number.length()!=19){
+            return new ResponseEntity<>("Number card must be 16 digits and with '-'", HttpStatus.FORBIDDEN);
+        }
+        //revisar que la tarjeta existe
+        if(!cardService.cardExistsByNumber(number)){
+            return new ResponseEntity<>("Card not found", HttpStatus.FORBIDDEN);
+        }
+        CardDTO card=cardService.getCardByNumber(number);
+        //revisar que no esté deshabilitada
+        if(card.getState().equals(CardState.DISABLED)){
+            return new ResponseEntity<>("Card already deleted", HttpStatus.FORBIDDEN);
+        }
+        //revisar que le pertenezca al cliente autenticado o que sea el admin
+        //obtener cliente
+        Client currentClient= clientService.findClientByEmail(authentication.getName());
+        if(currentClient==null){
+            return new ResponseEntity<>("User not found",HttpStatus.FORBIDDEN);
+        }
+        if(!cardService.cardBelongsToClient(number,authentication.getName())){
+            return new ResponseEntity<>("Card not belong to user",HttpStatus.FORBIDDEN);
+        }
+        //borrar tarjeta
+        cardService.deleteLogicalCard(number);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
 }

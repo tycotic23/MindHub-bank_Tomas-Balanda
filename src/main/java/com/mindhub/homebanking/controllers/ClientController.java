@@ -3,7 +3,6 @@ package com.mindhub.homebanking.controllers;
 import com.mindhub.homebanking.dtos.ClientDTO;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
-import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.implement.AccountServiceImplement;
 import com.mindhub.homebanking.services.implement.ClientServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -28,9 +26,12 @@ public class ClientController {
     private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/clients")
-    public ResponseEntity<Object> getAllClients() {
-
-        return new ResponseEntity<>(clientService.getAllClientDTO(),HttpStatus.ACCEPTED);
+    public ResponseEntity<Object> getAllClients(Authentication authentication) {
+        if(authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ADMIN"))) {
+            return new ResponseEntity<>(clientService.getAllClientDTO(),HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Only for admin", HttpStatus.FORBIDDEN);
     }
 
     @RequestMapping("/clients/{id}")
@@ -54,7 +55,7 @@ public class ClientController {
         return new ResponseEntity<>(client,HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(path="/clients",method = RequestMethod.POST)
+    @PostMapping("/clients")
     public ResponseEntity<Object> register(@RequestParam String firstName,@RequestParam String lastName,@RequestParam String email,@RequestParam String password ){
         //validacion de datos
         if (firstName.isBlank()) {

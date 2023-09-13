@@ -1,5 +1,6 @@
 package com.mindhub.homebanking.models;
 
+import com.mindhub.homebanking.utils.CardUtils;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -17,11 +18,15 @@ public class Card {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cardholder_id")
     private Client client;
+    //@Enumerated(EnumType.STRING)
     private CardType type;
+
+    //@Enumerated(EnumType.STRING)
     private CardColor color;
     private String number;
     private LocalDate thruDate, fromDate;
     private short cvv;
+    private CardState state;
 
     public Card() {
     }
@@ -33,15 +38,17 @@ public class Card {
         this.thruDate = thruDate;
         this.fromDate = fromDate;
         this.cvv = cvv;
+        this.state=CardState.ENABLED;
     }
 
     public Card(String number,CardType type, CardColor color){
         this.type = type;
         this.color = color;
         this.number=number;
-        generateCvv();
+        this.cvv= CardUtils.generateCvv();
         fromDate=LocalDate.now();
         thruDate=LocalDate.now().plusYears(5);
+        this.state=CardState.ENABLED;
     }
 
     public long getId() {
@@ -109,10 +116,11 @@ public class Card {
         this.cvv = cvv;
     }
 
-    private void generateCvv(){
-
-        cvv= (short) (Math.random() * 999);
+    public CardState getState() {
+        return state;
     }
 
-
+    public void setState(CardState state) {
+        this.state = state;
+    }
 }

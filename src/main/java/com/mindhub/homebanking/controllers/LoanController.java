@@ -37,7 +37,7 @@ public class LoanController {
 
     /*Crear un Loan y aplicarselo al cliente*/
     @Transactional
-    @RequestMapping(path = "/loans",method = RequestMethod.POST)
+    @PostMapping("/loans")
     public ResponseEntity<Object> addLoan(Authentication authentication, @RequestBody LoanApplicationDTO loanApplicationDTO){
         //revisar autenticacion
         if(authentication==null) {

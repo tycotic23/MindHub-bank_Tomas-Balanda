@@ -3,9 +3,11 @@ package com.mindhub.homebanking.services.implement;
 import com.mindhub.homebanking.dtos.CardDTO;
 import com.mindhub.homebanking.models.Card;
 import com.mindhub.homebanking.models.CardColor;
+import com.mindhub.homebanking.models.CardState;
 import com.mindhub.homebanking.models.CardType;
 import com.mindhub.homebanking.repositories.CardRepository;
 import com.mindhub.homebanking.services.CardService;
+import com.mindhub.homebanking.utils.CardUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class CardServiceImplement implements CardService {
 
     @Override
     public List<Card> findAllCard() {
-        return cardRepository.findAll();
+        return cardRepository.findByState(CardState.ENABLED);
     }
 
     @Override
@@ -40,6 +42,16 @@ public class CardServiceImplement implements CardService {
     }
 
     @Override
+    public Card findCardByNumber(String number) {
+        return cardRepository.findByNumber(number).orElse(null);
+    }
+
+    @Override
+    public CardDTO getCardByNumber(String number) {
+        return new CardDTO(findCardByNumber(number));
+    }
+
+    @Override
     public void saveCard(Card card) {
         cardRepository.save(card);
     }
@@ -49,25 +61,32 @@ public class CardServiceImplement implements CardService {
         //crear numero de tarjeta unico
         String newCardNumber="";
         do{
-            newCardNumber=generateCardNumber();
+            newCardNumber= CardUtils.generateCardNumber();
         }while(cardRepository.findByNumber(newCardNumber).orElse(null)!=null);
         //si se cumplen las condiciones crear entidad Card
         return new Card(newCardNumber,cardType,cardColor);
     }
 
     public boolean clientHasThatCard(CardType cardType, CardColor cardColor,String emailClient){
-        return cardRepository.existsByClient_emailAndTypeAndColor(emailClient,cardType,cardColor);
+        return cardRepository.existsByClient_emailAndTypeAndColorAndState(emailClient,cardType,cardColor,CardState.ENABLED);
     }
 
-    private String generateCardNumber(){
-        DecimalFormat format=new DecimalFormat("0000");
-        String number="";
-        for(int i=0;i<4;i++){
-            number += format.format((int)(Math.random() * 9999));
-            if(i!=3){
-                number+="-";
-            }
-        }
-        return number;
+    @Override
+    public void deleteLogicalCard(String number) {
+        Card card= findCardByNumber(number);
+        card.setState(CardState.DISABLED);
+        saveCard(card);
     }
+
+    @Override
+    public boolean cardBelongsToClient(String number, String email) {
+        return cardRepository.existsByClient_emailAndNumber(email,number);
+    }
+
+    @Override
+    public boolean cardExistsByNumber(String number) {
+        return cardRepository.existsByNumber(number);
+    }
+
+
 }

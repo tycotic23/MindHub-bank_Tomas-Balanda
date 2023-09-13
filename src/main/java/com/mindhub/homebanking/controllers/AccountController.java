@@ -20,8 +20,12 @@ public class AccountController {
     private ClientServiceImplement clientService;
 
     @RequestMapping("/accounts")
-    public ResponseEntity<Object> getAllAccounts(){
-        return new ResponseEntity<>(accountService.getAllAccountDTO(),HttpStatus.ACCEPTED);
+    public ResponseEntity<Object> getAllAccounts(Authentication authentication){
+        if(authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ADMIN"))) {
+            return new ResponseEntity<>(accountService.getAllAccountDTO(),HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Only for admin", HttpStatus.FORBIDDEN);
     }
 
     @RequestMapping("/accounts/{id}")
@@ -50,7 +54,7 @@ public class AccountController {
         }
     }
 
-    @RequestMapping(path ="/clients/current/accounts" ,method = RequestMethod.POST)
+    @PostMapping("/clients/current/accounts")
     public ResponseEntity<Object> createAccount(Authentication authentication){
         //revisar autenticacion
         if(authentication==null) {
