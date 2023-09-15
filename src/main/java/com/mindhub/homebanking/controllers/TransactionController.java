@@ -47,14 +47,14 @@ public class TransactionController {
             return new ResponseEntity<>("The accounts must be different",HttpStatus.FORBIDDEN);
         }
         //verificar que las cuentas existan
-        Account sourceAccount =accountService.findByNumber(fromAccountNumber);
-        Account destinationAccount=accountService.findByNumber(toAccountNumber);
-        if(sourceAccount==null){
+        if(!accountService.existsByNumber(fromAccountNumber)){
             return new ResponseEntity<>("Source account not found",HttpStatus.FORBIDDEN);
         }
-        if(destinationAccount==null){
+        if(!accountService.existsByNumber(toAccountNumber)){
             return new ResponseEntity<>("Destination account not found",HttpStatus.FORBIDDEN);
         }
+        Account sourceAccount =accountService.findByNumber(fromAccountNumber);
+        Account destinationAccount=accountService.findByNumber(toAccountNumber);
         //verificar que la cuenta de origen le pertenezca al cliente autenticado
         if(!sourceAccount.getClient().getEmail().equals(authentication.getName())){
             return new ResponseEntity<>("Source account must be yours",HttpStatus.FORBIDDEN);

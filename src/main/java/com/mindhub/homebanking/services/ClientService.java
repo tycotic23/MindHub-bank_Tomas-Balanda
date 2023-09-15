@@ -16,6 +16,8 @@ public interface ClientService {
     Client findClientByEmail(String email);
     List<Client> findAllClient();
 
+    boolean existsByEmail(String email);
+    void saveClient(Client client);
 
-    public void saveClient(Client client);
+    boolean existsById(long id);
 }

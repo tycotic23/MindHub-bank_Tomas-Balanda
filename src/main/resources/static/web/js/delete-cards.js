@@ -1,12 +1,24 @@
 Vue.createApp({
     data() {
         return {
+            clientCards: [],
             errorToats: null,
             errorMsg: null,
             cardNumber:""
         }
     },
     methods: {
+        getData: function () {
+            axios.get("/api/clients/current/cards")
+                .then((response) => {
+                    //get client ifo
+                    this.clientCards = response.data.filter(card=>card.state=='ENABLED');
+                })
+                .catch((error) => {
+                    this.errorMsg = "Error getting data";
+                    this.errorToats.show();
+                })
+        },
         formatDate: function (date) {
             return new Date(date).toLocaleDateString('en-gb');
         },
@@ -41,5 +53,6 @@ Vue.createApp({
     },
     mounted: function () {
         this.errorToats = new bootstrap.Toast(document.getElementById('danger-toast'));
+        this.getData();
     }
 }).mount('#app')

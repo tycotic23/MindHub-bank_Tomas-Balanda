@@ -33,4 +33,9 @@ public class LoanServiceImplement implements LoanService {
     public LoanDTO getLoanDTOById(long id) {
         return new LoanDTO(findLoanById(id));
     }
+
+    @Override
+    public boolean existsLoanById(long id) {
+        return loanRepository.existsLoanById(id);
+    }
 }

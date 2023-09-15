@@ -32,6 +32,11 @@ public class ClientServiceImplement implements ClientService {
     }
 
     @Override
+    public boolean existsByEmail(String email) {
+        return clientRepository.existsByEmail(email);
+    }
+
+    @Override
     public ClientDTO getClientDTOById(long id) {
         return new ClientDTO(findClientById(id));
     }
@@ -49,6 +54,11 @@ public class ClientServiceImplement implements ClientService {
     @Override
     public void saveClient(Client client) {
         clientRepository.save(client);
+    }
+
+    @Override
+    public boolean existsById(long id) {
+        return clientRepository.existsById(id);
     }
 
 

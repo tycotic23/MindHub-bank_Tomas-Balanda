@@ -18,4 +18,6 @@ public interface AccountService {
     AccountDTO getAccountById(long id);
     boolean accountBelongsToClient(long id, String email);
     boolean existById(long id);
+
+    boolean existsByNumber(String number);
 }

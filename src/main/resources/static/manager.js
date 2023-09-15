@@ -14,7 +14,7 @@ Vue.createApp({
     methods: {
         // load and display JSON sent by server for /clients
         loadData() {
-            axios.get("/clients")
+            /*axios.get("/api/clients")
                 .then((response) => {
                     // handle success
                     this.outPut = response.data;
@@ -22,7 +22,7 @@ Vue.createApp({
                 })
                 .catch((error) => {
                     alert("Error loading clients: " + error)
-                })
+                })*/
         },
         // handler for when user clicks add client
         addClient() {
@@ -32,8 +32,8 @@ Vue.createApp({
         },
         // code to post a new client using AJAX
         // on success, reload and display the updated data from the server
-        postClient(email, firstName, lastName) {
-            axios.post("/clients", { "email": email, "firstName": firstName, "lastName": lastName })
+        postClient(email, firstName, lastName) {/*
+            axios.post("/api/clients", { "email": email, "firstName": firstName, "lastName": lastName })
                 .then((response) => {
                     // handle success
                     this.loadData();
@@ -42,7 +42,7 @@ Vue.createApp({
                 .catch((error) => {
                     // handle error
                     alert("Error to create client: " + error)
-                })
+                })*/
         },
         clearData() {
             this.firstName = "";

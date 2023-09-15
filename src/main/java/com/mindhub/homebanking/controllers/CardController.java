@@ -40,10 +40,10 @@ public class CardController {
         }
 
         //obtener cliente
-        ClientDTO currentClient= clientService.getClientDTOByEmail(authentication.getName());
-        if(currentClient==null){
+        if(!clientService.existsByEmail(authentication.getName())){
             return new ResponseEntity<>("User not found",HttpStatus.FORBIDDEN);
         }
+        ClientDTO currentClient= clientService.getClientDTOByEmail(authentication.getName());
         //obtener sus tarjetas
         return new ResponseEntity<>(currentClient.getCards(), HttpStatus.ACCEPTED);
     }
@@ -63,10 +63,10 @@ public class CardController {
             return new ResponseEntity<>("Missing data: card color is empty", HttpStatus.FORBIDDEN);
         }
         //obtener cliente
-        Client currentClient= clientService.findClientByEmail(authentication.getName());
-        if(currentClient==null){
+        if(!clientService.existsByEmail(authentication.getName())){
             return new ResponseEntity<>("User not found",HttpStatus.FORBIDDEN);
         }
+        Client currentClient= clientService.findClientByEmail(authentication.getName());
         //revisar que no tenga ya ese tipo de tarjeta (puede tener una de cada tipo y de cada color)
         if(cardService.clientHasThatCard(cardType,cardColor,authentication.getName())){
             return new ResponseEntity<>("User already has that card. You only can have one card of each type and color", HttpStatus.FORBIDDEN);
@@ -98,10 +98,10 @@ public class CardController {
         }
         //revisar que le pertenezca al cliente autenticado o que sea el admin
         //obtener cliente
-        Client currentClient= clientService.findClientByEmail(authentication.getName());
-        if(currentClient==null){
+        if(!clientService.existsByEmail(authentication.getName())){
             return new ResponseEntity<>("User not found",HttpStatus.FORBIDDEN);
         }
+        Client currentClient= clientService.findClientByEmail(authentication.getName());
         if(!cardService.cardBelongsToClient(number,authentication.getName())){
             return new ResponseEntity<>("Card not belong to user",HttpStatus.FORBIDDEN);
         }

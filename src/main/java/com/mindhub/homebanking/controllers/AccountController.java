@@ -61,11 +61,11 @@ public class AccountController {
             return new ResponseEntity<>("You need to login first", HttpStatus.FORBIDDEN);
         }
         //obtener cliente y sus cuentas (no es un DTO porque lo modifico al agregarle su nueva cuenta)
-        Client currentClient=clientService.findClientByEmail(authentication.getName());
-        //revisar que exista
-        if(currentClient==null) {
+        //antes revisar que el cliente exista
+        if(!clientService.existsByEmail(authentication.getName())){
             return new ResponseEntity<>("User not found", HttpStatus.FORBIDDEN);
         }
+        Client currentClient=clientService.findClientByEmail(authentication.getName());
         //verificar que cumpla con todas las condiciones
         if(currentClient.getAccounts().size()>=3){
             return new ResponseEntity<>("User has 3 accounts", HttpStatus.FORBIDDEN);

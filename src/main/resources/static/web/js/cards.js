@@ -33,9 +33,13 @@ Vue.createApp({
                     this.errorToats.show();
                 })
         },
+        enabledCards: function(){
+            return this.clientInfo.cards.filter(card=>card.state=='ENABLED').length;
+        },
     },
     mounted: function () {
         this.errorToats = new bootstrap.Toast(document.getElementById('danger-toast'));
         this.getData();
+        
     }
 }).mount('#app')

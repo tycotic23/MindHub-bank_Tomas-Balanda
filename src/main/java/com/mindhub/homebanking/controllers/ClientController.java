@@ -36,10 +36,10 @@ public class ClientController {
 
     @RequestMapping("/clients/{id}")
     public ResponseEntity<Object> getClient(@PathVariable Long id) {
-        ClientDTO client= clientService.getClientDTOById(id);
-        if(client==null){
+        if(!clientService.existsById(id)){
             return new ResponseEntity<>("Client not found",HttpStatus.FORBIDDEN);
         }
+        ClientDTO client= clientService.getClientDTOById(id);
         return new ResponseEntity<>(client,HttpStatus.ACCEPTED);
     }
 
@@ -48,10 +48,10 @@ public class ClientController {
         if(authentication==null) {
             return new ResponseEntity<>("You need to login first", HttpStatus.FORBIDDEN);
         }
-        ClientDTO client= clientService.getClientDTOByEmail(authentication.getName());
-        if(client==null){
+        if(!clientService.existsByEmail(authentication.getName())){
             return new ResponseEntity<>("Client not found",HttpStatus.FORBIDDEN);
         }
+        ClientDTO client= clientService.getClientDTOByEmail(authentication.getName());
         return new ResponseEntity<>(client,HttpStatus.ACCEPTED);
     }
 
@@ -78,7 +78,7 @@ public class ClientController {
             return new ResponseEntity<>("Missing data: Please complete the password", HttpStatus.FORBIDDEN);
 
         }
-        if (clientService.getClientDTOByEmail(email)!=null) {
+        if (clientService.existsByEmail(email)) {
 
             return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
 

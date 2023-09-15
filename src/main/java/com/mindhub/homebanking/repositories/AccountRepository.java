@@ -18,4 +18,6 @@ public interface AccountRepository extends JpaRepository <Account,Long> {
 
    boolean existsByClient_emailAndId(String email,long id);
     boolean existsById(long id);
+
+    boolean existsByNumber(String number);
 }
