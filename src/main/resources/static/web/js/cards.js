@@ -6,6 +6,7 @@ Vue.createApp({
             debitCards: [],
             errorToats: null,
             errorMsg: null,
+            selectedCard:null,
         }
     },
     methods: {
@@ -36,10 +37,43 @@ Vue.createApp({
         enabledCards: function(){
             return this.clientInfo.cards.filter(card=>card.state=='ENABLED').length;
         },
+        classCard: function(card){
+            date=new Date();
+            if(card.thruDate.substring(0,4)<date.getFullYear()){
+                return 'outdate';
+            }
+            if(card.thruDate.substring(5,7)<date.getMonth() && card.thruDate.substring(0,4)==date.getFullYear()){
+                return 'outdate';
+            }
+            if(card.thruDate.substring(8,10)<date.getDate() && card.thruDate.substring(5,7)==date.getMonth() && card.thruDate.substring(0,4)==date.getFullYear()){
+                return 'outdate';
+            }
+            return 'outdate2';
+        },
+        renewCard: function(card){
+            selectedCard=card;
+            this.modal.show();
+            
+        },
+        applyRenew: function () {
+            axios.post(`/api/cards/renew?number=${selectedCard.number}`)
+            .then(response => {
+                this.modal.hide();
+                this.okmodal.show();
+            })
+            .catch((error) => {
+                this.errorMsg = error.response.data;
+                this.errorToats.show();
+            });
+        },
+        finish: function () {
+            window.location.reload();
+        },
     },
     mounted: function () {
         this.errorToats = new bootstrap.Toast(document.getElementById('danger-toast'));
         this.getData();
-        
+        this.modal = new bootstrap.Modal(document.getElementById('confirModal'));
+        this.okmodal = new bootstrap.Modal(document.getElementById('okModal'));
     }
 }).mount('#app')

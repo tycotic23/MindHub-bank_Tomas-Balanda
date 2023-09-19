@@ -23,8 +23,8 @@ public class HomebankingApplication {
 
 		SpringApplication.run(HomebankingApplication.class,args);
 	}
-/*
-	@Bean
+
+	/*@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository,
 									  AccountRepository accountRepository,
 									  TransactionRepository transactionRepository,
@@ -32,8 +32,12 @@ public class HomebankingApplication {
 									  ClientLoanRepository clientLoanRepository,
                                       CardRepository cardRepository) {
 		return (args -> {
+			Card card1=new Card(CardType.DEBIT,CardColor.GOLD,"1542 6345 2365 2346",LocalDate.now().minusYears(8),LocalDate.now().minusYears(3),(short)322);
+			Client client1= clientRepository.findByEmail("mirta@mindhub.com").orElse(null);
+			client1.addCard(card1);
+			cardRepository.save(card1);
 
-			Transaction tran1=new Transaction(TransactionType.CREDIT,500.0,"compra de helado", LocalDateTime.now());
+			/*Transaction tran1=new Transaction(TransactionType.CREDIT,500.0,"compra de helado", LocalDateTime.now());
 			Transaction tran2=new Transaction(TransactionType.DEBIT,-1500.0,"compra de helado", LocalDateTime.now());
 			Transaction tran3=new Transaction(TransactionType.CREDIT,1500.0,"compra de helado", LocalDateTime.now());
 			Transaction tran4=new Transaction(TransactionType.CREDIT,12500.0,"compra de helado", LocalDateTime.now());

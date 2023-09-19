@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,6 +87,19 @@ public class CardServiceImplement implements CardService {
     @Override
     public boolean cardExistsByNumber(String number) {
         return cardRepository.existsByNumber(number);
+    }
+
+    @Override
+    public boolean cardExistsById(long id) {
+        return cardRepository.existsById(id);
+    }
+
+    @Override
+    public void renewCard(String number) {
+        Card card= findCardByNumber(number);
+        card.setFromDate(LocalDate.now());
+        card.setThruDate(LocalDate.now().plusYears(5));
+        saveCard(card);
     }
 
 

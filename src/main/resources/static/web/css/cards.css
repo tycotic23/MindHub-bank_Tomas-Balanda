@@ -172,3 +172,19 @@
 	-webkit-transform: rotateY(0deg);
 	-moz-transform: rotateY(0deg);
 }
+
+.outdate{
+	filter:grayscale(100);
+}
+
+.outdate::before {
+	font-weight: bolder;
+	font-size: 30pt;
+	color: red;
+	content: "Outdated";
+	filter:none;
+	position: absolute;
+	top:60px;
+	left:90px;
+	transform: rotateZ(30deg);
+  }

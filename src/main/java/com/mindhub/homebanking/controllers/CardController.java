@@ -6,6 +6,7 @@ import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.services.implement.CardServiceImplement;
 import com.mindhub.homebanking.services.implement.ClientServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -107,6 +108,27 @@ public class CardController {
         }
         //borrar tarjeta
         cardService.deleteLogicalCard(number);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/cards/renew")
+    public ResponseEntity<Object> renewCard(@RequestParam String number,Authentication authentication){
+        //verificar datos
+        //revisar que haya un cliente autenticado
+        if(authentication==null) {
+            return new ResponseEntity<>("You need to login first", HttpStatus.FORBIDDEN);
+        }
+        //que exista la tarjeta
+        if(!cardService.cardExistsByNumber(number)){
+            return new ResponseEntity<>("Card not found", HttpStatus.FORBIDDEN);
+        }
+        //que el cliente autenticado sea el dueño de la tarjeta
+        if(!cardService.cardBelongsToClient(number, authentication.getName())){
+            return new ResponseEntity<>("Card not belong to user",HttpStatus.FORBIDDEN);
+        }
+
+        //renovar tarjeta
+        cardService.renewCard(number);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

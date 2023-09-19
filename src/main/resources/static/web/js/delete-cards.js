@@ -36,7 +36,6 @@ Vue.createApp({
                 this.errorMsg = "You must select a card number";
                 this.errorToats.show();
             } else {
-                console.log("yay");
                 let config = {
                     headers: {
                         'content-type': 'application/x-www-form-urlencoded'

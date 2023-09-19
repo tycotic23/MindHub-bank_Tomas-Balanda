@@ -23,4 +23,8 @@ public interface CardService {
     boolean cardBelongsToClient(String number, String email);
 
     boolean cardExistsByNumber(String number);
+
+    boolean cardExistsById(long id);
+
+    void renewCard(String number);
 }
