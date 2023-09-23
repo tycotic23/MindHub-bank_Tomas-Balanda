@@ -1,6 +1,6 @@
 FROM gradle:8.2.1-jdk11-alpine
 
-COPY homebanking-0.0.1-SNAPSHOT.jar
+COPY . .
 
 RUN gradle build
 
