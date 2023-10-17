@@ -25,7 +25,9 @@ public class WebAuthorization {
                 .antMatchers("/web/index.html","/web/css/**","/web/img/**","/web/js/index.js").permitAll()
                 .antMatchers(HttpMethod.POST,"/api/login","/api/logout","/api/clients").permitAll()
                 .antMatchers("/rest/**","/h2-console").hasAuthority("ADMIN")
-                .antMatchers("/web/**","/api/**").hasAuthority("CLIENT");
+                .antMatchers("/web/**","/api/accounts/**","/api/clients/current/**","/api/loans").hasAuthority("CLIENT")
+                .antMatchers("/api/**").hasAuthority("ADMIN")
+                .anyRequest().denyAll();
 
 
         http.formLogin()
@@ -35,7 +37,7 @@ public class WebAuthorization {
                 .passwordParameter("password")
 
                 .loginPage("/api/login");
-        http.logout().logoutUrl("/api/logout");
+        http.logout().logoutUrl("/api/logout").deleteCookies("JSESSIONID");
 
         http.csrf().disable();
         http.headers().frameOptions().disable();

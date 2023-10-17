@@ -1,8 +1,11 @@
 package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.CardDTO;
+import com.mindhub.homebanking.models.CardColor;
+import com.mindhub.homebanking.models.CardType;
 import com.mindhub.homebanking.services.implement.CardServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,18 +21,23 @@ public class CardController {
     private CardServiceImplement cardService;
 
     @RequestMapping("/cards")
-    public List<CardDTO> getAllCards(){
+    public ResponseEntity<Object> getAllCards(){
         return cardService.getCardDTO();
     }
 
     @RequestMapping("/clients/current/cards")
-    public List<CardDTO> getCurrentClientCards(Authentication authentication){
+    public ResponseEntity<Object> getCurrentClientCards(Authentication authentication){
+        if(authentication==null) {
+            return new ResponseEntity<>("You need to login first", HttpStatus.FORBIDDEN);
+        }
         return cardService.getCardDTObyClientEmail(authentication.getName());
     }
 
     @RequestMapping(path = "/clients/current/cards",method = RequestMethod.POST)
-    public ResponseEntity<Object> createCard(@RequestParam String cardType, @RequestParam String cardColor, Authentication authentication){
-
+    public ResponseEntity<Object> createCard(@RequestParam CardType cardType, @RequestParam CardColor cardColor, Authentication authentication){
+        if(authentication==null) {
+            return new ResponseEntity<>("You need to login first", HttpStatus.FORBIDDEN);
+        }
         return cardService.createClientCard(cardType,cardColor,authentication.getName());
     }
 

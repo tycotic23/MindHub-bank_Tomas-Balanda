@@ -6,9 +6,10 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface AccountService {
-    public List<AccountDTO> getAccountDTO();
-    public AccountDTO getAccountDTO(long id);
+    public ResponseEntity<Object> getAccountDTO();
+    public ResponseEntity<Object> getAccountDTO(long id,String clientEmail);
+    public ResponseEntity<Object> getAccountDTO(long id);
     public ResponseEntity<Object> saveAccount(String clientEmail);
 
-    public List<AccountDTO> getClientAccountDTO(String clientEmail);
+    public ResponseEntity<Object> getClientAccountDTO(String clientEmail);
 }

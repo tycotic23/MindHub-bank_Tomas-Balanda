@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="index-html">
 
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 </head>
 
 <body class="index-body">
-    <div id="app">
+    <div id="app" class="index-login">
         <div class="toast-container position-absolute p-3 top-0 end-0" id="toastPlacement">
             <div id="danger-toast" data-bs-delay="2000" class="toast align-items-center text-white bg-danger border-0"
                 role="alert" aria-live="assertive" aria-atomic="true">
@@ -28,13 +28,12 @@
         </div>
         <div class="container index-container">
             <div class="row justify-content-center">
-                <div class="col-md-12 col-lg-10">
-                    <div class="wrap d-md-flex justify-content-center bg-light shadow border-0 rounded-5">
+                <div class="col-md-6 col-lg-4 login-view">
+                    <div class="wrap d-md-flex flex-column justify-content-center">
                         <div
-                            class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last welcome shadow-sm rounded-5">
+                            class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last welcome">
                             <div class="text w-100">
                                 <img class="welcome-logo" src="img/Mindhub-logo.png">
-                                <h2>Welcome to MindHub Bank</h2>
                                 <div v-if="showSignUp" class="form-group">
                                     <a v-on:click="showSignUpToogle" href="#" class="btn btn-light my-2"><small>Sign
                                             In</small></a>
@@ -56,12 +55,12 @@
                                 <form action="#" class="signin-form" v-on:submit="signIn($event)">
                                     <div class="form-group mb-3">
                                         <label class="label" for="email">Email</label>
-                                        <input v-model="email" id="email" type="email" class="form-control"
+                                        <input v-model="email" id="email" type="email" class="input-login form-control"
                                             placeholder="email@mail.com" required>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="label" for="password">Password</label>
-                                        <input v-model="password" id="password" type="password" class="form-control"
+                                        <input v-model="password" id="password" type="password" class="input-login form-control"
                                             placeholder="Password" required autocomplete="off">
                                     </div>
                                     <div class="form-group">
@@ -78,22 +77,22 @@
                                 <form action="#" class="signout-form" v-on:submit="signUp($event)">
                                     <div class="form-group mb-3">
                                         <label class="label" for="firstName">First name</label>
-                                        <input v-model="firstName" id="firstName" type="text" class="form-control"
+                                        <input v-model="firstName" id="firstName" type="text" class="input-login form-control"
                                             placeholder="Juan" required>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="lastName" for="lastName">Last name</label>
-                                        <input v-model="lastName" id="lastName" type="text" class="form-control"
+                                        <input v-model="lastName" id="lastName" type="text" class="input-login form-control"
                                             placeholder="Martinez" required>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="label" for="remail">Email</label>
-                                        <input v-model="email" id="remail" type="remail" class="form-control"
+                                        <input v-model="email" id="remail" type="remail" class="input-login form-control"
                                             placeholder="email@mail.com" required>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label class="label" for="rpassword">Password</label>
-                                        <input v-model="password" id="rpassword" type="password" class="form-control"
+                                        <input v-model="password" id="rpassword" type="password" class="input-login form-control"
                                             placeholder="Password" required autocomplete="off">
                                     </div>
                                     <div class="form-group">
@@ -102,6 +101,7 @@
                                 </form>
                             </template>
                         </div>
+                        
                     </div>
                 </div>
             </div>

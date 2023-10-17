@@ -35,10 +35,10 @@ public class Card {
         this.cvv = cvv;
     }
 
-    public Card(CardType type, CardColor color){
+    public Card(String number,CardType type, CardColor color){
         this.type = type;
         this.color = color;
-        generateNumber();
+        this.number=number;
         generateCvv();
         fromDate=LocalDate.now();
         thruDate=LocalDate.now().plusYears(5);
@@ -114,15 +114,5 @@ public class Card {
         cvv= (short) (Math.random() * 999);
     }
 
-    private void generateNumber(){
-        DecimalFormat format=new DecimalFormat("0000");
-        String number="";
-        for(int i=0;i<4;i++){
-            number += format.format((int)(Math.random() * 9999));
-            if(i!=3){
-                number+="-";
-            }
-        }
-        this.number= number;
-    }
+
 }

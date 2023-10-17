@@ -28,6 +28,9 @@ public class TransactionController {
 
     @RequestMapping(path = "/transactions",method = RequestMethod.POST)
     public ResponseEntity<Object> createTransaction(Authentication authentication,@RequestParam String fromAccountNumber, @RequestParam String toAccountNumber, @RequestParam double amount, @RequestParam String description){
+        if(authentication==null) {
+            return new ResponseEntity<>("You need to login first", HttpStatus.FORBIDDEN);
+        }
         return transactionService.saveTransaction(authentication.getName(), fromAccountNumber,toAccountNumber,amount,description);
     }
 }

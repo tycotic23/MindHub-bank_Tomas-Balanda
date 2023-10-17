@@ -3,6 +3,7 @@ package com.mindhub.homebanking.controllers;
 import com.mindhub.homebanking.dtos.ClientDTO;
 import com.mindhub.homebanking.services.implement.ClientServiceImplement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +17,13 @@ public class ClientController {
     private ClientServiceImplement clientService;
 
     @RequestMapping("/clients")
-    public List<ClientDTO> getAllClients() {
+    public ResponseEntity<Object> getAllClients() {
 
         return clientService.getClientDTO();
     }
 
     @RequestMapping("/clients/{id}")
-    public ClientDTO getClient(@PathVariable Long id) {
+    public ResponseEntity<Object> getClient(@PathVariable Long id) {
         return clientService.getClientDTO(id);
     }
 
@@ -32,7 +33,10 @@ public class ClientController {
     }
 
     @RequestMapping("/clients/current")
-    public ClientDTO getCurrentClient(Authentication authentication){
+    public ResponseEntity<Object> getCurrentClient(Authentication authentication){
+        if(authentication==null) {
+            return new ResponseEntity<>("You need to login first", HttpStatus.FORBIDDEN);
+        }
         return clientService.getClientDTOByEmail(authentication.getName());
     }
 

@@ -1,14 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@200;400;600&display=swap');
+
 * {
     margin: 0px;
     padding: 0px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Barlow', sans-serif;
     box-sizing: border-box;
+    color: white;
 }
 
 .account {
-    background: linear-gradient(45deg, #ee0979, #ff6a00);
-    color: white;
-    box-shadow: 1px 1px 5px black;
+    background: none;
+    box-shadow: 1px 1px 5px white;
+    border-radius: 20px;
+    border-color: white;
+    border-width: 2px;
 }
 
 .account:hover {
@@ -46,8 +51,8 @@
 }
 
 .loan {
-    background: linear-gradient(45deg, #ee09cf, #0026ff);
-    color: white;
+    background: none;
+    border: 2px white solid !important;
 }
 
 .menu-logo {
@@ -55,18 +60,16 @@
     height: 40px;
 }
 
-.welcome {
-    background: linear-gradient(45deg, #5573f8cc, #2d0a66);
-}
-
 .welcome-logo {
     width: 60%;
 }
 
 .index-body {
-    background-image: url(../img/mindhub.jpg);
+   margin: 0;
+    background-image: linear-gradient(black,90%, rgba(0, 0, 0, 0)),url(../img/fondo.jpg);
     background-size: cover;
     background-attachment: fixed;
+    background-position: center bottom;
 }
 
 .index-container {
@@ -75,4 +78,72 @@
 
 .rounded-5 {
     border-radius: 10px;
+}
+
+/* ventana de login */
+.login-view{
+    background-image:linear-gradient(rgba(0, 0, 0, 0.219), rgba(0, 0, 0, 0.801)),url(../img/fondologin.jpg);
+    background-size: cover;
+    box-shadow: 0 0 20px rgb(255, 255, 255);
+    color:white;
+    border-radius: 40px;
+    margin-bottom: 6rem;
+}
+
+.login-view>div{
+    max-height: 100%;
+}
+
+html, #app{
+    background-color: rgb(39, 39, 39);
+}
+
+#app.index-login{
+    background: none;
+}
+
+.index-html{
+    background-color: black;
+}
+
+.link-white{
+    color:white;
+}
+
+.left-bar{
+    background-image:url(../img/montaña.avif);
+    background-size: cover;
+    border-color: white;
+    border-radius: 30px;
+    box-shadow: 0 0 20px rgb(0, 0, 0);
+    padding-top: 1rem;
+    min-height: 80vh;
+    min-width: 200px;
+}
+
+.nav-link:hover{
+    background-color: rgb(212, 212, 212);
+    color:black;
+}
+
+.active{
+    background-color: white !important;
+    color: black !important;
+}
+
+option{
+    color: black;
+}
+
+.input-login{
+    background-color: rgba(255,255,255,0.3);
+    color:white;
+}
+
+.input-login::placeholder {
+    color:rgb(204, 204, 204);
+}
+
+small{
+    color:black;
 }
