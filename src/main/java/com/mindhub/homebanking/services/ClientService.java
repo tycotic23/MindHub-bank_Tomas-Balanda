@@ -1,17 +1,21 @@
 package com.mindhub.homebanking.services;
 
 import com.mindhub.homebanking.dtos.ClientDTO;
-import org.springframework.http.ResponseEntity;
+import com.mindhub.homebanking.models.Client;
 
 import java.util.List;
 
 public interface ClientService {
 
-    public ResponseEntity<Object> getClientDTO();
+    ClientDTO getClientDTOById(long id);
+    ClientDTO getClientDTOByEmail(String email);
 
-    public ResponseEntity<Object> getClientDTO(long id);
+    List<ClientDTO> getAllClientDTO();
 
-    public ResponseEntity<Object> getClientDTOByEmail(String email);
+    Client findClientById(long id);
+    Client findClientByEmail(String email);
+    List<Client> findAllClient();
 
-    public ResponseEntity<Object> saveClient(String firstName, String lastName, String email, String password);
+
+    public void saveClient(Client client);
 }

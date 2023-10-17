@@ -1,15 +1,21 @@
 package com.mindhub.homebanking.services;
 
 import com.mindhub.homebanking.dtos.AccountDTO;
-import org.springframework.http.ResponseEntity;
+import com.mindhub.homebanking.models.Account;
 
 import java.util.List;
 
 public interface AccountService {
-    public ResponseEntity<Object> getAccountDTO();
-    public ResponseEntity<Object> getAccountDTO(long id,String clientEmail);
-    public ResponseEntity<Object> getAccountDTO(long id);
-    public ResponseEntity<Object> saveAccount(String clientEmail);
 
-    public ResponseEntity<Object> getClientAccountDTO(String clientEmail);
+    void saveAccount(Account account);
+    Account generateAccount();
+
+    Account findByNumber(String number);
+    List<Account> findAllAccount();
+    List<AccountDTO> getAllAccountDTO();
+
+    Account findAccountById(long id);
+    AccountDTO getAccountById(long id);
+    boolean accountBelongsToClient(long id, String email);
+    boolean existById(long id);
 }
