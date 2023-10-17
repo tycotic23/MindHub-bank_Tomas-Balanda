@@ -11,6 +11,7 @@ public class ClientDTO {
     private String firstName,lastName,email;
 
     private Set<AccountDTO> accounts= new HashSet<>();
+    private Set<ClientLoanDTO> loans= new HashSet<>();
 
     public ClientDTO() {
     }
@@ -22,6 +23,7 @@ public class ClientDTO {
         this.email = client.getEmail();
         //transformar el set de Account a set de AccountDTO
         this.accounts=client.getAccounts().stream().map(AccountDTO::new).collect(Collectors.toSet());
+        this.loans=client.getClientLoans().stream().map(ClientLoanDTO::new).collect(Collectors.toSet());
     }
 
     public long getId() {
@@ -42,5 +44,9 @@ public class ClientDTO {
 
     public Set<AccountDTO> getAccounts() {
         return accounts;
+    }
+
+    public Set<ClientLoanDTO> getLoans() {
+        return loans;
     }
 }
