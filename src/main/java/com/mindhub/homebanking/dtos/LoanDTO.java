@@ -14,7 +14,7 @@ public class LoanDTO {
     private String name;
     private double maxAmount;
     private List<Integer> payments=new ArrayList<>();
-    Set<ClientLoanDTO> clients=new HashSet<>();
+    private Set<ClientLoanDTO> clients=new HashSet<>();
 
     public LoanDTO(Loan loan) {
         this.id = loan.getId();

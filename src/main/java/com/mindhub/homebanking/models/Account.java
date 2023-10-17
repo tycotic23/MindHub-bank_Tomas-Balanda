@@ -26,11 +26,10 @@ public class Account {
     @OneToMany(mappedBy = "account",fetch = FetchType.EAGER)
     private Set<Transaction> transactions = new HashSet<>();
 
-
-
-
-
     public Account() {
+        generateNumberAccount();
+        balance=0.0;
+        creationDate=LocalDate.now();
     }
 
     public Account(String number, LocalDate creationDate, double balance) {
@@ -82,5 +81,19 @@ public class Account {
     public void addTransaction(Transaction transaction){
         transaction.setAccount(this);
         transactions.add(transaction);
+    }
+
+    public void plusBalance(double amount){
+        balance+=amount;
+    }
+
+    public void minusBalance(double amount){
+        balance-=amount;
+    }
+
+    private void generateNumberAccount(){
+        //crea un numero aleatorio entre el 0 y el 99999999 de la forma: VIN-nnnnnnnn
+        int random= (int) (Math.random() * 99999999);
+        number= "VIN-"+random;
     }
 }
