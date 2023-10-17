@@ -16,15 +16,15 @@ import java.util.List;
 @SpringBootApplication
 public class HomebankingApplication {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    /*@Autowired
+    private PasswordEncoder passwordEncoder;*/
 
 	public static void main(String[] args) {
 
 		SpringApplication.run(HomebankingApplication.class,args);
 	}
-/*
-	@Bean
+
+	/*@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository,
 									  AccountRepository accountRepository,
 									  TransactionRepository transactionRepository,
@@ -32,6 +32,10 @@ public class HomebankingApplication {
 									  ClientLoanRepository clientLoanRepository,
                                       CardRepository cardRepository) {
 		return (args -> {
+			Card card1=new Card(CardType.DEBIT,CardColor.GOLD,"1542 6345 3365 2396",LocalDate.now().minusYears(8),LocalDate.now().minusYears(3),(short)322);
+			Client client1= clientRepository.findByEmail("mirta@mindhub.com").orElse(null);
+			client1.addCard(card1);
+			cardRepository.save(card1);
 
 			Transaction tran1=new Transaction(TransactionType.CREDIT,500.0,"compra de helado", LocalDateTime.now());
 			Transaction tran2=new Transaction(TransactionType.DEBIT,-1500.0,"compra de helado", LocalDateTime.now());

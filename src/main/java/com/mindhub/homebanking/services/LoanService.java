@@ -11,4 +11,6 @@ public interface LoanService {
 
     Loan findLoanById(long id);
     LoanDTO getLoanDTOById(long id);
+
+    boolean existsLoanById(long id);
 }

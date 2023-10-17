@@ -20,8 +20,12 @@ public class AccountController {
     private ClientServiceImplement clientService;
 
     @RequestMapping("/accounts")
-    public ResponseEntity<Object> getAllAccounts(){
-        return new ResponseEntity<>(accountService.getAllAccountDTO(),HttpStatus.ACCEPTED);
+    public ResponseEntity<Object> getAllAccounts(Authentication authentication){
+        if(authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ADMIN"))) {
+            return new ResponseEntity<>(accountService.getAllAccountDTO(),HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Only for admin", HttpStatus.FORBIDDEN);
     }
 
     @RequestMapping("/accounts/{id}")
@@ -50,18 +54,18 @@ public class AccountController {
         }
     }
 
-    @RequestMapping(path ="/clients/current/accounts" ,method = RequestMethod.POST)
+    @PostMapping("/clients/current/accounts")
     public ResponseEntity<Object> createAccount(Authentication authentication){
         //revisar autenticacion
         if(authentication==null) {
             return new ResponseEntity<>("You need to login first", HttpStatus.FORBIDDEN);
         }
         //obtener cliente y sus cuentas (no es un DTO porque lo modifico al agregarle su nueva cuenta)
-        Client currentClient=clientService.findClientByEmail(authentication.getName());
-        //revisar que exista
-        if(currentClient==null) {
+        //antes revisar que el cliente exista
+        if(!clientService.existsByEmail(authentication.getName())){
             return new ResponseEntity<>("User not found", HttpStatus.FORBIDDEN);
         }
+        Client currentClient=clientService.findClientByEmail(authentication.getName());
         //verificar que cumpla con todas las condiciones
         if(currentClient.getAccounts().size()>=3){
             return new ResponseEntity<>("User has 3 accounts", HttpStatus.FORBIDDEN);

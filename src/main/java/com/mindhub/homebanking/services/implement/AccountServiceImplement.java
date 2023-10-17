@@ -59,7 +59,10 @@ public class AccountServiceImplement implements AccountService {
         return accountRepository.existsById(id);
     }
 
-
+    @Override
+    public boolean existsByNumber(String number) {
+        return accountRepository.existsByNumber(number);
+    }
 
 
     @Override

@@ -37,7 +37,7 @@ public class LoanController {
 
     /*Crear un Loan y aplicarselo al cliente*/
     @Transactional
-    @RequestMapping(path = "/loans",method = RequestMethod.POST)
+    @PostMapping("/loans")
     public ResponseEntity<Object> addLoan(Authentication authentication, @RequestBody LoanApplicationDTO loanApplicationDTO){
         //revisar autenticacion
         if(authentication==null) {
@@ -55,15 +55,11 @@ public class LoanController {
         if(loanApplicationDTO.getAmount()<=0) {
             return new ResponseEntity<>("Amount can't be zero", HttpStatus.FORBIDDEN);
         }
-        //revisar que payments no sea 0
-        if(loanApplicationDTO.getPayments()==0) {
-            return new ResponseEntity<>("Payments can't be zero", HttpStatus.FORBIDDEN);
-        }
         //revisar que el tipo de préstamo exista
-        Loan loanType=loanService.findLoanById(loanApplicationDTO.getLoanId());
-        if(loanType==null) {
+        if(!loanService.existsLoanById(loanApplicationDTO.getLoanId())){
             return new ResponseEntity<>("Loan not found", HttpStatus.FORBIDDEN);
         }
+        Loan loanType=loanService.findLoanById(loanApplicationDTO.getLoanId());
         //revisar que no exceda el monto máximo
         if(loanType.getMaxAmount()<loanApplicationDTO.getAmount()) {
             return new ResponseEntity<>("Maximum amount reached", HttpStatus.FORBIDDEN);
@@ -72,16 +68,16 @@ public class LoanController {
         if(!loanType.getPayments().contains(loanApplicationDTO.getPayments())) {
             return new ResponseEntity<>("Payments incorrect", HttpStatus.FORBIDDEN);
         }
-        //revisar que la cuenta exista
-        Account destinationAccount=accountService.findByNumber(loanApplicationDTO.getToAccountNumber());
-        if(destinationAccount==null) {
+        //revisar que la cuenta de destino exista
+        if(!accountService.existsByNumber(loanApplicationDTO.getToAccountNumber())){
             return new ResponseEntity<>("Account not found", HttpStatus.FORBIDDEN);
         }
+        Account destinationAccount=accountService.findByNumber(loanApplicationDTO.getToAccountNumber());
         //revisar que el cliente exista
-        Client client=clientService.findClientByEmail(authentication.getName());
-        if(client==null) {
+        if(!clientService.existsByEmail(authentication.getName())){
             return new ResponseEntity<>("Client not found", HttpStatus.FORBIDDEN);
         }
+        Client client=clientService.findClientByEmail(authentication.getName());
         //revisar que la cuenta pertenezca al cliente
         if(!client.getAccounts().contains(destinationAccount)) {
             return new ResponseEntity<>("The account does not belong to the current client", HttpStatus.FORBIDDEN);

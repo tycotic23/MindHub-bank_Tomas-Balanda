@@ -23,6 +23,7 @@ bootRun {
 
 dependencies {
 	implementation 'org.postgresql:postgresql'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	implementation 'org.springframework.boot:spring-boot-starter-web'

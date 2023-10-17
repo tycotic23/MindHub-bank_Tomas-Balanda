@@ -10,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -29,7 +26,7 @@ public class TransactionController {
 
 
     @Transactional
-    @RequestMapping(path = "/transactions",method = RequestMethod.POST)
+    @PostMapping("/transactions")
     public ResponseEntity<Object> createTransaction(Authentication authentication,@RequestParam String fromAccountNumber, @RequestParam String toAccountNumber, @RequestParam double amount, @RequestParam String description){
         //revisar autenticacion
         if(authentication==null) {
@@ -50,14 +47,14 @@ public class TransactionController {
             return new ResponseEntity<>("The accounts must be different",HttpStatus.FORBIDDEN);
         }
         //verificar que las cuentas existan
-        Account sourceAccount =accountService.findByNumber(fromAccountNumber);
-        Account destinationAccount=accountService.findByNumber(toAccountNumber);
-        if(sourceAccount==null){
+        if(!accountService.existsByNumber(fromAccountNumber)){
             return new ResponseEntity<>("Source account not found",HttpStatus.FORBIDDEN);
         }
-        if(destinationAccount==null){
+        if(!accountService.existsByNumber(toAccountNumber)){
             return new ResponseEntity<>("Destination account not found",HttpStatus.FORBIDDEN);
         }
+        Account sourceAccount =accountService.findByNumber(fromAccountNumber);
+        Account destinationAccount=accountService.findByNumber(toAccountNumber);
         //verificar que la cuenta de origen le pertenezca al cliente autenticado
         if(!sourceAccount.getClient().getEmail().equals(authentication.getName())){
             return new ResponseEntity<>("Source account must be yours",HttpStatus.FORBIDDEN);
