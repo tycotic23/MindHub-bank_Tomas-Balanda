@@ -1,7 +1,9 @@
 package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.ClientDTO;
+import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
+import com.mindhub.homebanking.repositories.AccountRepository;
 import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,8 +26,11 @@ public class ClientController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     @RequestMapping("/clients")
-    public List<ClientDTO> getAll() {
+    public List<ClientDTO> getAllClients() {
 
         return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
     }
@@ -38,18 +44,39 @@ public class ClientController {
     @RequestMapping(path="/clients",method = RequestMethod.POST)
     public ResponseEntity<Object> register(@RequestParam String firstName,@RequestParam String lastName,@RequestParam String email,@RequestParam String password ){
         //verificar datos recibidos
-        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (firstName.isEmpty()) {
 
-            return new ResponseEntity<>("Missing data", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Missing data: Please complete the first name", HttpStatus.FORBIDDEN);
+
+        }
+        if (lastName.isEmpty()) {
+
+            return new ResponseEntity<>("Missing data: Please complete the last name", HttpStatus.FORBIDDEN);
+
+        }
+        if (email.isEmpty()) {
+
+            return new ResponseEntity<>("Missing data: Please complete the email", HttpStatus.FORBIDDEN);
+
+        }
+        if (password.isEmpty()) {
+
+            return new ResponseEntity<>("Missing data: Please complete the password", HttpStatus.FORBIDDEN);
 
         }
         if (clientRepository.findByEmail(email) !=  null) {
 
-            return new ResponseEntity<>("Name already in use", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>("Email already in use", HttpStatus.FORBIDDEN);
 
         }
         //si todo fue correcto crear la nueva entidad Cliente
-        clientRepository.save(new Client(firstName,lastName,email,passwordEncoder.encode(password)));
+        Client newClient =new Client(firstName,lastName,email,passwordEncoder.encode(password));
+        clientRepository.save(newClient);
+        //crear primera cuenta del cliente
+        Account account = new Account("VIN-"+(int) (Math.random() * 99999999), LocalDate.now(),0.0);
+        account.setClient(newClient);
+        accountRepository.save(account);
+        //devolver respuesta
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -57,4 +84,6 @@ public class ClientController {
     public ClientDTO getCurrentClient(Authentication authentication){
         return new ClientDTO(clientRepository.findByEmail(authentication.getName()));
     }
+
+
 }
