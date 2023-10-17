@@ -15,17 +15,17 @@ import java.util.stream.Collectors;
 public class ClientController {
 
     @Autowired
-    private ClientRepository repo;
+    private ClientRepository clientRepository;
 
     @RequestMapping("/clients")
     public List<ClientDTO> getAll() {
 
-        return repo.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
+        return clientRepository.findAll().stream().map(ClientDTO::new).collect(Collectors.toList());
     }
 
     @RequestMapping("/clients/{id}")
     public ClientDTO getClient(@PathVariable Long id) {
         //obtengo un Client por su id y obtengo su clientID (o null si no lo encuentra)
-        return repo.findById(id).map(ClientDTO::new).orElse(null);
+        return clientRepository.findById(id).map(ClientDTO::new).orElse(null);
     }
 }
